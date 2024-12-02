@@ -9,20 +9,8 @@ data class DayTwo(val input: String) {
 
     fun partOne(): Int = reports.count { it.isSafe() }
 
-    fun partTwo(): Int {
-        val safe = reports.count { it.isSafe() }
-        val unsafe = reports.filterNot { it.isSafe() }
-        val safeAfter = unsafe.filter { report ->
-            report.indices.any {
-                val reducedReport = report.toMutableList()
-                reducedReport.removeAt(it)
-                reducedReport.isSafe()
-            }
-        }
-
-        return safe + safeAfter.count()
-    }
-
+    fun partTwo(): Int = reports.count { it.isSafe() } + reports.filterNot { it.isSafe() }
+        .count { report -> report.indices.any { report.toMutableList().apply { removeAt(it) }.isSafe() } }
 
     private fun List<Int>.isSafe(): Boolean {
         val pairs = this.zipWithNext().map { it.second - it.first }
