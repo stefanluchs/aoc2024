@@ -22,10 +22,10 @@ class DayTwoTest {
         assertEquals(2, result)
     }
 
-   // @Test
+    @Test
     fun partTwo() {
-        //val result = DayTwo(example).partTwo()
-      //  assertEquals(31, result)
+        val result = DayTwo(example).partTwo()
+        assertEquals(4, result)
     }
 
 }
