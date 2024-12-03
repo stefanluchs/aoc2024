@@ -1,6 +1,5 @@
-package me.luchs.aoc2024.one
+package me.luchs.aoc2024
 
-import me.luchs.aoc2024.two.DayTwo
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

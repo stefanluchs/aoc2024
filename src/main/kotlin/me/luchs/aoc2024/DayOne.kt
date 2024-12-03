@@ -1,4 +1,4 @@
-package me.luchs.aoc2024.one
+package me.luchs.aoc2024
 
 import kotlin.math.abs
 
