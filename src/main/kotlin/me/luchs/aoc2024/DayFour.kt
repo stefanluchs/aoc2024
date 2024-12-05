@@ -6,7 +6,14 @@ fun String.toCharMatrix(): CharMatrix = this.lines().map { it.toCharArray() }.to
 
 fun CharMatrix.dimensions(): Pair<IntRange, IntRange> = indices to 0..<this[0].size
 
-fun CharMatrix.valueOf(position: Pair<Int, Int>): Char = this[position.row()][position.column()]
+fun CharMatrix.valueOf(position: Pair<Int, Int>): Char? {
+    val (rows, columns) = this.dimensions()
+    return if (position.first in rows && position.second in columns) {
+        this[position.row()][position.column()]
+    } else {
+        null
+    }
+}
 
 private fun CharMatrix.entries(c: Char): Sequence<Pair<Int, Int>> = this.asSequence()
     .mapIndexed { row, line ->
@@ -19,12 +26,6 @@ private fun CharMatrix.entries(c: Char): Sequence<Pair<Int, Int>> = this.asSeque
 fun Pair<Int, Int>.row() = this.first
 
 fun Pair<Int, Int>.column() = this.second
-
-fun Pair<Int, Int>.adjacent(
-    direction: Direction,
-    rowRange: IntRange,
-    columnRange: IntRange
-): Pair<Int, Int>? = this.adjacent(1, direction, rowRange, columnRange).drop(1).singleOrNull()
 
 fun Pair<Int, Int>.adjacent(
     numberOfSteps: Int = 1,
@@ -44,11 +45,6 @@ enum class Direction(val row: Int, val column: Int) {
     UP_RIGHT(-1, 1),
     DOWN_LEFT(1, -1),
     DOWN_RIGHT(1, 1);
-
-    companion object {
-        fun diagonals(): List<Direction> = listOf(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)
-        fun orthogonal(): List<Direction> = listOf(UP, DOWN, LEFT, RIGHT)
-    }
 }
 
 data class DayFour(val input: String) {
@@ -81,28 +77,38 @@ data class DayFour(val input: String) {
     }
 
     fun partTwo(): Int {
-
         val (rows, columns) = matrix.dimensions()
-
-        val diagonal = matrix.entries('A')
+        return matrix.entries('A')
+            .filterNot { it.first == 0 || it.second == 0 || it.first == rows.last || it.second == columns.last }
             .map { position ->
                 listOf(
-                    listOf(Direction.UP_LEFT, Direction.DOWN_RIGHT).mapNotNull { position.adjacent(it, rows, columns)?.let { matrix.valueOf(it) } },
-                    listOf(Direction.UP_RIGHT, Direction.DOWN_LEFT).mapNotNull { position.adjacent(it, rows, columns)?.let { matrix.valueOf(it) } },
-                ).filter { it.size == 2 }.filter { it.containsAll(listOf('M', 'S')) }
-            }.filter { it.size == 2 }
+                    listOfNotNull(
+                        matrix.valueOf(position.first - 1 to position.second - 1),
+                        matrix.valueOf(position),
+                        matrix.valueOf(position.first + 1 to position.second + 1),
+                    ),
+                    listOfNotNull(
+                        matrix.valueOf(position.first - 1 to position.second + 1),
+                        matrix.valueOf(position),
+                        matrix.valueOf(position.first + 1 to position.second - 1),
+                    ),
+                    listOfNotNull(
+                        matrix.valueOf(position.first + 1 to position.second - 1),
+                        matrix.valueOf(position),
+                        matrix.valueOf(position.first - 1 to position.second + 1),
+                    ),
+                    listOfNotNull(
+                        matrix.valueOf(position.first + 1 to position.second + 1),
+                        matrix.valueOf(position),
+                        matrix.valueOf(position.first - 1 to position.second - 1),
+                    )
+                ).filter { it.size == 3 }
+                    .map { it.joinToString(separator = "") }
+                    .filter { it == "MAS" }
+            }
+            .filter { it.size == 2 }
             .toList()
-
-        val orthogonal = matrix.entries('A')
-            .map { position ->
-                listOf(
-                    listOf(Direction.UP, Direction.DOWN).mapNotNull { position.adjacent(it, rows, columns)?.let { matrix.valueOf(it) } },
-                    listOf(Direction.LEFT, Direction.RIGHT).mapNotNull { position.adjacent(it, rows, columns)?.let { matrix.valueOf(it) } },
-                ).filter { it.size == 2 }.filter { it.containsAll(listOf('M', 'S')) }
-            }.filter { it.size == 2 }
-            .toList()
-
-        return diagonal.count() + orthogonal.count()
+            .size
     }
 
 }
