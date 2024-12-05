@@ -13,24 +13,23 @@ data class DayFive(val input: String) {
     fun partOne(): Int {
         val (rules, pages) = input.split("\n\n")
         val conditions = rules.split("\n").map { it.toCondition() }
-        return pages.split("\n")
-            .asSequence()
+        return pages.split("\n").asSequence()
             .filter { page -> conditions.all { it.invoke(page) } }
             .map { it.split(',') }
             .map { it[it.size / 2] }
-            .map { it.toInt() }
-            .sum()
+            .sumOf { it.toInt() }
     }
 
     fun partTwo(): Int {
         val (rules, pages) = input.split("\n\n")
         val conditions = rules.split("\n").map { it.toCondition() }
         val comparator = rules.split("\n").toComparator()
-        val invalid = pages.split("\n")
+        return pages.split("\n").asSequence()
             .filterNot { page -> conditions.all { it.invoke(page) } }
             .map { it.split(',') }
-        val sorted = invalid.map { it.sortedWith(comparator) }
-        return sorted.map { it[it.size / 2] }.map { it.toInt() }.sum()
+            .map { it.sortedWith(comparator) }
+            .map { it[it.size / 2] }
+            .sumOf { it.toInt() }
     }
 
     private fun List<String>.toComparator(): Comparator<String> {
