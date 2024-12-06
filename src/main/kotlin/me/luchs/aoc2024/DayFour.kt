@@ -1,32 +1,5 @@
 package me.luchs.aoc2024
 
-typealias CharMatrix = Array<CharArray>
-
-fun String.toCharMatrix(): CharMatrix = this.lines().map { it.toCharArray() }.toTypedArray()
-
-fun CharMatrix.dimensions(): Pair<IntRange, IntRange> = indices to 0..<this[0].size
-
-fun CharMatrix.valueOf(position: Pair<Int, Int>): Char? {
-    val (rows, columns) = this.dimensions()
-    return if (position.first in rows && position.second in columns) {
-        this[position.row()][position.column()]
-    } else {
-        null
-    }
-}
-
-private fun CharMatrix.entries(c: Char): Sequence<Pair<Int, Int>> = this.asSequence()
-    .mapIndexed { row, line ->
-        line.mapIndexed { colum, value -> colum to value }
-            .filter { (_, value) -> value == c }
-            .map { row to it.first }
-    }
-    .flatten()
-
-fun Pair<Int, Int>.row() = this.first
-
-fun Pair<Int, Int>.column() = this.second
-
 fun Pair<Int, Int>.adjacent(
     numberOfSteps: Int = 1,
     direction: Direction,
@@ -35,17 +8,6 @@ fun Pair<Int, Int>.adjacent(
 ): List<Pair<Int, Int>> = (0..numberOfSteps)
     .map { steps -> this.first + steps * direction.row to this.second + steps * direction.column }
     .filter { it.first in rowRange && it.second in columnRange }
-
-enum class Direction(val row: Int, val column: Int) {
-    UP(-1, 0),
-    DOWN(1, 0),
-    LEFT(0, -1),
-    RIGHT(0, 1),
-    UP_LEFT(-1, -1),
-    UP_RIGHT(-1, 1),
-    DOWN_LEFT(1, -1),
-    DOWN_RIGHT(1, 1);
-}
 
 data class DayFour(val input: String) {
 
