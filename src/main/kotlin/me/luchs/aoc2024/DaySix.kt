@@ -14,7 +14,7 @@ data class DaySix(val input: String) {
     fun partTwo(): Int {
         val start = matrix.entry('^')
         val path = matrix.pathFrom(start).map { it.first }.distinct()
-        // naive brute force solution
+        // naive brute force solution with miserable runtime > 10s
         return path.drop(1) // skip first
             .parallelStream() // parallel execution on all cpu cores ;-)
             .filter { obstruction -> matrix.pathContainsCycle(start, obstruction) }
