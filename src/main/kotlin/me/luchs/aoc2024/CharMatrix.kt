@@ -7,10 +7,6 @@ fun String.toCharMatrix(): CharMatrix = this.lines().map { it.toCharArray() }.to
 
 fun CharMatrix.dimensions(): Pair<IntRange, IntRange> = indices to 0..<this[0].size
 
-fun CharMatrix.valueOf(position: Pair<Int, Int>, direction: Direction, steps: Int = 1) = this.valueOf(
-    position.first + direction.row * steps to position.second + direction.column * steps
-)
-
 fun CharMatrix.valueOf(position: Pair<Int, Int>): Char? {
     val (rows, columns) = this.dimensions()
     return if (position.first in rows && position.second in columns) {
