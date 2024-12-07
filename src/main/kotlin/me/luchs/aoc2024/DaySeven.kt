@@ -7,13 +7,16 @@ data class DaySeven(val input: String) {
         Equation(testValue.toLong(), numbers.split(' ').map { it.toLong() })
     }
 
-    fun partOne(): Long = equations.filter { it.isTrue(operationsPartOne()) }.sumOf { it.testValue }
+    fun partOne(): Long = solveWith(operationsPartOne())
 
-    fun partTwo(): Long = equations.filter { it.isTrue(operationsPartTwo()) }.sumOf { it.testValue }
+    fun partTwo(): Long = solveWith(operationsPartTwo())
+
+    private fun solveWith(operations: List<(Long, Long) -> Long>) =
+        equations.filter { it.isTrueWith(operations) }.sumOf { it.testValue }
 
     private data class Equation(val testValue: Long, val numbers: List<Long>) {
 
-        fun isTrue(operators: List<(Long, Long) -> Long>): Boolean {
+        fun isTrueWith(operators: List<(Long, Long) -> Long>): Boolean {
             var options = listOf(numbers.first())
             numbers.drop(1).forEach { number ->
                 options = options.flatMap { option ->
