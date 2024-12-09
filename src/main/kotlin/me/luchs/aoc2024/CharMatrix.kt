@@ -1,11 +1,15 @@
 package me.luchs.aoc2024
 
+import kotlin.math.abs
+
 
 typealias CharMatrix = Array<CharArray>
 
 fun String.toCharMatrix(): CharMatrix = this.lines().map { it.toCharArray() }.toTypedArray()
 
 fun CharMatrix.dimensions(): Pair<IntRange, IntRange> = indices to 0..<this[0].size
+
+fun CharMatrix.distinctValues(): List<Char> = this.flatMap { it.toList() }.distinct()
 
 fun CharMatrix.valueOf(position: Pair<Int, Int>): Char? {
     val (rows, columns) = this.dimensions()
@@ -26,6 +30,12 @@ fun CharMatrix.entries(c: Char): Sequence<Pair<Int, Int>> = this.asSequence()
     }
     .flatten()
 
-fun Pair<Int, Int>.row() = this.first
+typealias Coordinate2D = Pair<Int, Int>
 
-fun Pair<Int, Int>.column() = this.second
+fun Coordinate2D.row() = this.first
+
+fun Coordinate2D.column() = this.second
+
+fun Coordinate2D.manhattanDistanceTo(other: Coordinate2D): Int =
+    abs(this.first - other.first) + abs(this.second - other.second)
+
