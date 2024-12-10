@@ -16,4 +16,10 @@ class DayNineTest {
         assertEquals(1928, result)
     }
 
+    @Test
+    fun partTwo() {
+        val result = DayNine(example).partTwo()
+        assertEquals(2858, result)
+    }
+
 }
