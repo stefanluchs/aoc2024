@@ -39,3 +39,9 @@ fun Coordinate2D.column() = this.second
 fun Coordinate2D.manhattanDistanceTo(other: Coordinate2D): Int =
     abs(this.first - other.first) + abs(this.second - other.second)
 
+fun Coordinate2D.adjacentFour() = listOf(
+    this.first + 1 to this.second,
+    this.first - 1 to this.second,
+    this.first to this.second + 1,
+    this.first to this.second - 1
+)
