@@ -17,11 +17,16 @@ class DayTenTest {
         10456732
     """.trimIndent()
 
-
     @Test
     fun partOne() {
         val result = DayTen(example).partOne()
         assertEquals(36, result)
+    }
+
+    @Test
+    fun partTwo() {
+        val result = DayTen(example).partTwo()
+        assertEquals(81, result)
     }
 
 }

@@ -30,6 +30,64 @@ fun CharMatrix.entries(c: Char): Sequence<Pair<Int, Int>> = this.asSequence()
     }
     .flatten()
 
+fun <T> CharMatrix.bfs(
+    start: Coordinate2D,
+    neighbours: (map: CharMatrix, current: Coordinate2D) -> List<Coordinate2D>,
+    isInResult: (map: CharMatrix, current: Coordinate2D, next: List<Coordinate2D>) -> T?
+): List<T> {
+    val visited = mutableSetOf<Coordinate2D>()
+    val queue = ArrayDeque<Coordinate2D>()
+    val result = mutableListOf<T>()
+
+    queue.add(start)
+
+    while (queue.isNotEmpty()) {
+
+        val current = queue.removeFirst()
+
+        visited.add(start)
+
+        val next = neighbours.invoke(this, current)
+            .filterNot { it in visited }
+            .filterNot { it in queue }
+
+        isInResult.invoke(this, current, next)?.let { result.add(it) }
+
+        next.let { queue.addAll(it) }
+    }
+
+    return result
+}
+
+fun CharMatrix.allPathsBetween(
+    start: Coordinate2D,
+    neighbours: (map: CharMatrix, current: Coordinate2D) -> List<Coordinate2D>,
+    isTarget: (value: Char?) -> Boolean
+): List<List<Coordinate2D>> {
+
+    val paths = mutableListOf<List<Coordinate2D>>()
+    val currentPath = mutableListOf<Coordinate2D>()
+
+    fun CharMatrix.dfs(coordinate: Coordinate2D) {
+
+        currentPath.add(coordinate)
+
+        if (isTarget(this.valueOf(coordinate))) {
+            paths.add(currentPath)
+        } else {
+            neighbours(this, coordinate).filterNot { it in currentPath }.forEach { this.dfs(it) }
+        }
+
+        currentPath.removeAt(currentPath.size - 1) // Backtrack
+    }
+
+    this.dfs(start)
+
+    return paths
+
+}
+
+
 typealias Coordinate2D = Pair<Int, Int>
 
 fun Coordinate2D.row() = this.first
